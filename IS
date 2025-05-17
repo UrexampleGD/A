@@ -9,26 +9,17 @@ ScreenGui.Parent = lp:WaitForChild("PlayerGui")
 
 -- Helper function
 local function createButton(text, callback)
-	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(0, 200, 0, 50)
-	button.Position = UDim2.new(0.4, 0, 0.1, 0)
-	button.Text = text
-	button.BackgroundColor3 = Color3.fromRGB(255, 102, 102)
-	button.Font = Enum.Font.GothamBold
-	button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	button.TextSize = 18
-	button.Parent = ScreenGui
-	button.MouseButton1Click:Connect(callback)
-	return button
-end
-
--- Function to create typewriter effect
-local function typewriterEffect(textObject, text, speed)
-	textObject.Text = ""
-	for i = 1, #text do
-		textObject.Text = string.sub(text, 1, i)
-		task.wait(speed or 0.05)
-	end
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 200, 0, 50)
+    button.Position = UDim2.new(0.4, 0, 0.1, 0)
+    button.Text = text
+    button.BackgroundColor3 = Color3.fromRGB(255, 102, 102)
+    button.Font = Enum.Font.GothamBold
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 18
+    button.Parent = ScreenGui
+    button.MouseButton1Click:Connect(callback)
+    return button
 end
 
 -- MAIN GUI
@@ -75,30 +66,30 @@ TextBox.Parent = HintUI
 Instance.new("UICorner", TextBox).CornerRadius = UDim.new(0, 5)
 
 local function createStyledButton(text, position, callback, parent)
-	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(0.4, 0, 0.2, 0)
-	button.Position = position
-	button.Text = text
-	button.Font = Enum.Font.GothamBold
-	button.TextSize = 16
-	button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	button.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
-	button.MouseButton1Click:Connect(callback)
-	button.Parent = parent
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0.4, 0, 0.2, 0)
+    button.Position = position
+    button.Text = text
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 16
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
+    button.MouseButton1Click:Connect(callback)
+    button.Parent = parent
 end
 
 createStyledButton("Show Hint", UDim2.new(0.1, 0, 0.6, 0), function()
-	local hint = Instance.new("Hint")
-	hint.Parent = game.Workspace
-	hint.Text = TextBox.Text
+    local hint = Instance.new("Hint")
+    hint.Parent = game.Workspace
+    hint.Text = TextBox.Text
 end, HintUI)
 
 createStyledButton("Show Message", UDim2.new(0.5, 0, 0.6, 0), function()
-	local message = Instance.new("Message")
-	message.Parent = game.Workspace
-	message.Text = TextBox.Text
-	task.delay(3, function() message:Destroy() end)
+    local message = Instance.new("Message")
+    message.Parent = game.Workspace
+    message.Text = TextBox.Text
+    task.delay(3, function() message:Destroy() end)
 end, HintUI)
 
 local CloseButton = Instance.new("TextButton")
@@ -113,96 +104,192 @@ Instance.new("UICorner", CloseButton).CornerRadius = UDim.new(0, 8)
 CloseButton.Parent = HintUI
 CloseButton.MouseButton1Click:Connect(function() HintUI.Visible = false end)
 
--- ANIMATED GUI
-local AnimatedUI = HintUI:Clone()
-AnimatedUI.Visible = false
+-- ANIMATED GUI (NEW SEPARATE GUI)
+local AnimatedUI = Instance.new("Frame")
+AnimatedUI.Size = UDim2.new(0, 350, 0, 220)
+AnimatedUI.Position = UDim2.new(0.5, -175, 0.5, -110)
 AnimatedUI.BackgroundColor3 = Color3.fromRGB(90, 180, 255)
+AnimatedUI.Visible = false
 AnimatedUI.Parent = ScreenGui
 
-AnimatedUI:FindFirstChild("TextLabel").Text = "Animated Hint/Message"
-AnimatedUI:FindFirstChild("TextButton").Visible = false
-AnimatedUI:FindFirstChild("TextBox").Text = ""
+Instance.new("UICorner", AnimatedUI).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", AnimatedUI).Color = Color3.fromRGB(255, 255, 255)
 
-for _, btn in ipairs(AnimatedUI:GetChildren()) do
-	if btn:IsA("TextButton") and btn.Text == "Show Hint" then
-		btn.MouseButton1Click:Connect(function()
-			local hint = Instance.new("Hint")
-			hint.Parent = game.Workspace
-			
-			-- Create a coroutine for the typewriter effect
-			coroutine.wrap(function()
-				local fullText = AnimatedUI.TextBox.Text
-				for i = 1, #fullText do
-					hint.Text = string.sub(fullText, 1, i)
-					task.wait(0.05) -- Adjust speed here (smaller = faster)
-				end
-				task.wait(3) -- Keep the hint for 3 seconds after typing
-				hint:Destroy()
-			end)()
-		end)
-	elseif btn:IsA("TextButton") and btn.Text == "Show Message" then
-		btn.MouseButton1Click:Connect(function()
-			local msg = Instance.new("Message")
-			msg.Parent = game.Workspace
-			
-			-- Create a coroutine for the typewriter effect
-			coroutine.wrap(function()
-				local fullText = AnimatedUI.TextBox.Text
-				for i = 1, #fullText do
-					msg.Text = string.sub(fullText, 1, i)
-					task.wait(0.05) -- Adjust speed here (smaller = faster)
-				end
-				task.wait(3) -- Keep the message for 3 seconds after typing
-				msg:Destroy()
-			end)()
-		end)
-	elseif btn:IsA("TextButton") and btn.Text == "Close" then
-		btn.MouseButton1Click:Connect(function()
-			AnimatedUI.Visible = false
-		end)
-	end
+local AnimatedTitle = Instance.new("TextLabel")
+AnimatedTitle.Size = UDim2.new(1, 0, 0.2, 0)
+AnimatedTitle.Text = "Animated Hint/Message"
+AnimatedTitle.Font = Enum.Font.GothamBold
+AnimatedTitle.TextSize = 20
+AnimatedTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+AnimatedTitle.BackgroundTransparency = 1
+AnimatedTitle.Parent = AnimatedUI
+
+local BackBtn = Instance.new("TextButton")
+BackBtn.Size = UDim2.new(0, 180, 0, 30)
+BackBtn.Position = UDim2.new(1, 10, 0, 0)
+BackBtn.Text = "Back to Regular Hint"
+BackBtn.Font = Enum.Font.GothamBold
+BackBtn.TextSize = 14
+BackBtn.TextWrapped = true
+BackBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+BackBtn.BackgroundColor3 = Color3.fromRGB(255, 102, 102)
+BackBtn.Parent = AnimatedUI
+Instance.new("UICorner", BackBtn).CornerRadius = UDim.new(0, 6)
+
+local AnimatedTextBox = Instance.new("TextBox")
+AnimatedTextBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+AnimatedTextBox.Position = UDim2.new(0.1, 0, 0.3, 0)
+AnimatedTextBox.PlaceholderText = "Enter your message..."
+AnimatedTextBox.Font = Enum.Font.Gotham
+AnimatedTextBox.TextSize = 18
+AnimatedTextBox.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
+AnimatedTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+AnimatedTextBox.Parent = AnimatedUI
+Instance.new("UICorner", AnimatedTextBox).CornerRadius = UDim.new(0, 5)
+
+-- Add speed control slider
+local SpeedLabel = Instance.new("TextLabel")
+SpeedLabel.Size = UDim2.new(0.8, 0, 0.1, 0)
+SpeedLabel.Position = UDim2.new(0.1, 0, 0.55, 0)
+SpeedLabel.Text = "Animation Speed:"
+SpeedLabel.Font = Enum.Font.Gotham
+SpeedLabel.TextSize = 14
+SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedLabel.BackgroundTransparency = 1
+SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
+SpeedLabel.Parent = AnimatedUI
+
+local SpeedSlider = Instance.new("Frame")
+SpeedSlider.Size = UDim2.new(0.8, 0, 0.05, 0)
+SpeedSlider.Position = UDim2.new(0.1, 0, 0.65, 0)
+SpeedSlider.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+SpeedSlider.Parent = AnimatedUI
+Instance.new("UICorner", SpeedSlider).CornerRadius = UDim.new(1, 0)
+
+local SpeedFill = Instance.new("Frame")
+SpeedFill.Size = UDim2.new(0.5, 0, 1, 0)
+SpeedFill.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
+SpeedFill.Parent = SpeedSlider
+Instance.new("UICorner", SpeedFill).CornerRadius = UDim.new(1, 0)
+
+local SpeedValue = Instance.new("TextLabel")
+SpeedValue.Size = UDim2.new(0.8, 0, 0.1, 0)
+SpeedValue.Position = UDim2.new(0.1, 0, 0.7, 0)
+SpeedValue.Text = "Speed: 0.05"
+SpeedValue.Font = Enum.Font.Gotham
+SpeedValue.TextSize = 14
+SpeedValue.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedValue.BackgroundTransparency = 1
+SpeedValue.TextXAlignment = Enum.TextXAlignment.Left
+SpeedValue.Parent = AnimatedUI
+
+local currentSpeed = 0.05
+
+-- Make the slider interactive
+local function updateSpeed(positionX)
+    local relativeX = math.clamp(positionX - SpeedSlider.AbsolutePosition.X, 0, SpeedSlider.AbsoluteSize.X)
+    local ratio = relativeX / SpeedSlider.AbsoluteSize.X
+    SpeedFill.Size = UDim2.new(ratio, 0, 1, 0)
+    
+    -- Map ratio from 0.01 (fast) to 0.1 (slow)
+    currentSpeed = 0.01 + (0.09 * (1 - ratio))
+    SpeedValue.Text = string.format("Speed: %.3f", currentSpeed)
 end
 
+SpeedSlider.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        updateSpeed(input.Position.X)
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
+        if UIS:GetMouseLocation().Y >= SpeedSlider.AbsolutePosition.Y and 
+           UIS:GetMouseLocation().Y <= SpeedSlider.AbsolutePosition.Y + SpeedSlider.AbsoluteSize.Y then
+            updateSpeed(UIS:GetMouseLocation().X)
+        end
+    end
+end)
+
+createStyledButton("Show Animated Hint", UDim2.new(0.1, 0, 0.8, 0), function()
+    local hint = Instance.new("Hint")
+    hint.Parent = game.Workspace
+    
+    -- Create a coroutine for the typewriter effect
+    coroutine.wrap(function()
+        local fullText = AnimatedTextBox.Text
+        for i = 1, #fullText do
+            hint.Text = string.sub(fullText, 1, i)
+            task.wait(currentSpeed) -- Use the adjustable speed
+        end
+        task.wait(3) -- Keep the hint for 3 seconds after typing
+        hint:Destroy()
+    end)()
+end, AnimatedUI)
+
+createStyledButton("Show Animated Message", UDim2.new(0.5, 0, 0.8, 0), function()
+    local msg = Instance.new("Message")
+    msg.Parent = game.Workspace
+    
+    -- Create a coroutine for the typewriter effect
+    coroutine.wrap(function()
+        local fullText = AnimatedTextBox.Text
+        for i = 1, #fullText do
+            msg.Text = string.sub(fullText, 1, i)
+            task.wait(currentSpeed) -- Use the adjustable speed
+        end
+        task.wait(3) -- Keep the message for 3 seconds after typing
+        msg:Destroy()
+    end)()
+end, AnimatedUI)
+
+-- Button connections
 AnimatedBtn.MouseButton1Click:Connect(function()
-	AnimatedUI.Visible = true
+    HintUI.Visible = false
+    AnimatedUI.Visible = true
+end)
+
+BackBtn.MouseButton1Click:Connect(function()
+    AnimatedUI.Visible = false
+    HintUI.Visible = true
 end)
 
 -- Show base button
 createButton("Custom Hint/Message", function()
-	HintUI.Visible = true
+    HintUI.Visible = true
 end)
 
 -- Dragging both GUIs
 for _, frame in pairs({HintUI, AnimatedUI}) do
-	local dragToggle, dragInput, dragStart, startPos
+    local dragToggle, dragInput, dragStart, startPos
 
-	local function updateInput(input)
-		local delta = input.Position - dragStart
-		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
+    local function updateInput(input)
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
 
-	frame.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragToggle = true
-			dragStart = input.Position
-			startPos = frame.Position
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragToggle = false
-				end
-			end)
-		end
-	end)
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = true
+            dragStart = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragToggle = false
+                end
+            end)
+        end
+    end)
 
-	frame.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-			dragInput = input
-		end
-	end)
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
 
-	UIS.InputChanged:Connect(function(input)
-		if input == dragInput and dragToggle then
-			updateInput(input)
-		end
-	end)
+    UIS.InputChanged:Connect(function(input)
+        if input == dragInput and dragToggle then
+            updateInput(input)
+        end
+    end)
 end
