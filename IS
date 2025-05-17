@@ -1,0 +1,180 @@
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local lp = Players.LocalPlayer
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "HintUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = lp:WaitForChild("PlayerGui")
+
+-- Helper function
+local function createButton(text, callback)
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(0, 200, 0, 50)
+	button.Position = UDim2.new(0.4, 0, 0.1, 0)
+	button.Text = text
+	button.BackgroundColor3 = Color3.fromRGB(255, 102, 102)
+	button.Font = Enum.Font.GothamBold
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.TextSize = 18
+	button.Parent = ScreenGui
+	button.MouseButton1Click:Connect(callback)
+	return button
+end
+
+-- MAIN GUI
+local HintUI = Instance.new("Frame")
+HintUI.Size = UDim2.new(0, 350, 0, 220)
+HintUI.Position = UDim2.new(0.5, -175, 0.5, -110)
+HintUI.BackgroundColor3 = Color3.fromRGB(255, 102, 102)
+HintUI.Visible = false
+HintUI.Parent = ScreenGui
+
+Instance.new("UICorner", HintUI).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", HintUI).Color = Color3.fromRGB(255, 255, 255)
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.Text = "Custom Hint/Message"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 20
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1
+Title.Parent = HintUI
+
+local AnimatedBtn = Instance.new("TextButton")
+AnimatedBtn.Size = UDim2.new(0, 180, 0, 30)
+AnimatedBtn.Position = UDim2.new(1, 10, 0, 0)
+AnimatedBtn.Text = "Animated Custom Hint & Message"
+AnimatedBtn.Font = Enum.Font.GothamBold
+AnimatedBtn.TextSize = 14
+AnimatedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+AnimatedBtn.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
+AnimatedBtn.Parent = HintUI
+Instance.new("UICorner", AnimatedBtn).CornerRadius = UDim.new(0, 6)
+
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+TextBox.Position = UDim2.new(0.1, 0, 0.3, 0)
+TextBox.PlaceholderText = "Enter your message..."
+TextBox.Font = Enum.Font.Gotham
+TextBox.TextSize = 18
+TextBox.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
+TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextBox.Parent = HintUI
+Instance.new("UICorner", TextBox).CornerRadius = UDim.new(0, 5)
+
+local function createStyledButton(text, position, callback, parent)
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(0.4, 0, 0.2, 0)
+	button.Position = position
+	button.Text = text
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 16
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
+	button.MouseButton1Click:Connect(callback)
+	button.Parent = parent
+end
+
+createStyledButton("Show Hint", UDim2.new(0.1, 0, 0.6, 0), function()
+	local hint = Instance.new("Hint")
+	hint.Parent = game.Workspace
+	hint.Text = TextBox.Text
+end, HintUI)
+
+createStyledButton("Show Message", UDim2.new(0.5, 0, 0.6, 0), function()
+	local message = Instance.new("Message")
+	message.Parent = game.Workspace
+	message.Text = TextBox.Text
+	task.delay(3, function() message:Destroy() end)
+end, HintUI)
+
+local CloseButton = Instance.new("TextButton")
+CloseButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+CloseButton.Position = UDim2.new(0.1, 0, 0.8, 0)
+CloseButton.Text = "Close"
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 16
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+Instance.new("UICorner", CloseButton).CornerRadius = UDim.new(0, 8)
+CloseButton.Parent = HintUI
+CloseButton.MouseButton1Click:Connect(function() HintUI.Visible = false end)
+
+-- ANIMATED GUI
+local AnimatedUI = HintUI:Clone()
+AnimatedUI.Visible = false
+AnimatedUI.BackgroundColor3 = Color3.fromRGB(90, 180, 255)
+AnimatedUI.Parent = ScreenGui
+
+AnimatedUI:FindFirstChild("TextLabel").Text = "Animated Hint/Message"
+AnimatedUI:FindFirstChild("TextButton").Visible = false
+AnimatedUI:FindFirstChild("TextBox").Text = ""
+
+for _, btn in ipairs(AnimatedUI:GetChildren()) do
+	if btn:IsA("TextButton") and btn.Text == "Show Hint" then
+		btn.MouseButton1Click:Connect(function()
+			local hint = Instance.new("Hint")
+			hint.Parent = game.Workspace
+			hint.Text = "💫 " .. AnimatedUI.TextBox.Text .. " 💫"
+			task.delay(3, function() hint:Destroy() end)
+		end)
+	elseif btn:IsA("TextButton") and btn.Text == "Show Message" then
+		btn.MouseButton1Click:Connect(function()
+			local msg = Instance.new("Message")
+			msg.Parent = game.Workspace
+			msg.Text = "🌟 " .. AnimatedUI.TextBox.Text .. " 🌟"
+			task.delay(3, function() msg:Destroy() end)
+		end)
+	elseif btn:IsA("TextButton") and btn.Text == "Close" then
+		btn.MouseButton1Click:Connect(function()
+			AnimatedUI.Visible = false
+		end)
+	end
+end
+
+AnimatedBtn.MouseButton1Click:Connect(function()
+	AnimatedUI.Visible = true
+end)
+
+-- Show base button
+createButton("Custom Hint/Message", function()
+	HintUI.Visible = true
+end)
+
+-- Dragging both GUIs
+for _, frame in pairs({HintUI, AnimatedUI}) do
+	local dragToggle, dragInput, dragStart, startPos
+
+	local function updateInput(input)
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+
+	frame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragToggle = true
+			dragStart = input.Position
+			startPos = frame.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)
+		end
+	end)
+
+	frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	UIS.InputChanged:Connect(function(input)
+		if input == dragInput and dragToggle then
+			updateInput(input)
+		end
+	end)
+end
