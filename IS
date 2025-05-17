@@ -65,7 +65,8 @@ TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 TextBox.Parent = HintUI
 Instance.new("UICorner", TextBox).CornerRadius = UDim.new(0, 5)
 
-local function createStyledButton(text, position, callback, parent)
+local function createStyledButton(text, position, callback, parent, color)
+    color = color or Color3.fromRGB(200, 50, 50) -- Default to red if no color provided
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.4, 0, 0.2, 0)
     button.Position = position
@@ -73,7 +74,7 @@ local function createStyledButton(text, position, callback, parent)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 16
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    button.BackgroundColor3 = color
     Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
     button.MouseButton1Click:Connect(callback)
     button.Parent = parent
@@ -125,8 +126,8 @@ AnimatedTitle.BackgroundTransparency = 1
 AnimatedTitle.Parent = AnimatedUI
 
 local BackBtn = Instance.new("TextButton")
-BackBtn.Size = UDim2.new(0.4, 0, 0.1, 0)
-BackBtn.Position = UDim2.new(0.3, 0, 0.85, 0)
+BackBtn.Size = UDim2.new(0.8, 0, 0.1, 0) -- Changed size to match width of other buttons
+BackBtn.Position = UDim2.new(0.1, 0, 0.85, 0) -- Centered position
 BackBtn.Text = "Back to Regular"
 BackBtn.Font = Enum.Font.GothamBold
 BackBtn.TextSize = 14
@@ -285,8 +286,25 @@ UIS.InputChanged:Connect(function(input)
     end
 end)
 
--- Animated buttons
-createStyledButton("Show Animated Hint", UDim2.new(0.1, 0, 0.8, 0), function()
+-- Animated buttons (now blue) with TextWrapped
+local function createAnimatedButton(text, position, callback, parent, color)
+    color = color or Color3.fromRGB(80, 120, 255)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0.4, 0, 0.2, 0)
+    button.Position = position
+    button.Text = text
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 16
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = color
+    button.TextWrapped = true -- Added TextWrapped property
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
+    button.MouseButton1Click:Connect(callback)
+    button.Parent = parent
+    return button
+end
+
+createAnimatedButton("Show Animated Hint", UDim2.new(0.1, 0, 0.8, 0), function()
     local hint = Instance.new("Hint")
     hint.Parent = game.Workspace
     
@@ -301,7 +319,7 @@ createStyledButton("Show Animated Hint", UDim2.new(0.1, 0, 0.8, 0), function()
     end)()
 end, AnimatedUI)
 
-createStyledButton("Show Animated Message", UDim2.new(0.5, 0, 0.8, 0), function()
+createAnimatedButton("Show Animated Message", UDim2.new(0.5, 0, 0.8, 0), function()
     local msg = Instance.new("Message")
     msg.Parent = game.Workspace
     
@@ -316,20 +334,25 @@ createStyledButton("Show Animated Message", UDim2.new(0.5, 0, 0.8, 0), function(
     end)()
 end, AnimatedUI)
 
--- Button connections
-AnimatedBtn.MouseButton1Click:Connect(function()
-    HintUI.Visible = false
-    AnimatedUI.Visible = true
-end)
+-- Toggle between basic and animated UIs
+local function toggleAnimatedUI()
+    if AnimatedUI.Visible then
+        AnimatedUI.Visible = false
+        HintUI.Visible = true
+    else
+        HintUI.Visible = false
+        AnimatedUI.Visible = true
+    end
+end
 
-BackBtn.MouseButton1Click:Connect(function()
-    AnimatedUI.Visible = false
-    HintUI.Visible = true
-end)
+-- Button connections
+AnimatedBtn.MouseButton1Click:Connect(toggleAnimatedUI)
+BackBtn.MouseButton1Click:Connect(toggleAnimatedUI)
 
 -- Show base button
-createButton("Custom Hint/Message", function()
+local mainButton = createButton("Custom Hint/Message", function()
     HintUI.Visible = true
+    AnimatedUI.Visible = false
 end)
 
 -- Dragging both GUIs
