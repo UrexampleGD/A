@@ -22,7 +22,7 @@ local function createButton(text, callback)
     return button
 end
 
--- MAIN GUI
+-- MAIN GUI (Regular hints/messages)
 local HintUI = Instance.new("Frame")
 HintUI.Size = UDim2.new(0, 350, 0, 220)
 HintUI.Position = UDim2.new(0.5, -175, 0.5, -110)
@@ -104,10 +104,10 @@ Instance.new("UICorner", CloseButton).CornerRadius = UDim.new(0, 8)
 CloseButton.Parent = HintUI
 CloseButton.MouseButton1Click:Connect(function() HintUI.Visible = false end)
 
--- ANIMATED GUI (NEW SEPARATE GUI)
+-- ANIMATED GUI (COMPLETELY SEPARATE)
 local AnimatedUI = Instance.new("Frame")
-AnimatedUI.Size = UDim2.new(0, 350, 0, 220)
-AnimatedUI.Position = UDim2.new(0.5, -175, 0.5, -110)
+AnimatedUI.Size = UDim2.new(0, 400, 0, 300) -- Larger size for more controls
+AnimatedUI.Position = UDim2.new(0.5, -200, 0.5, -150)
 AnimatedUI.BackgroundColor3 = Color3.fromRGB(90, 180, 255)
 AnimatedUI.Visible = false
 AnimatedUI.Parent = ScreenGui
@@ -116,7 +116,7 @@ Instance.new("UICorner", AnimatedUI).CornerRadius = UDim.new(0, 10)
 Instance.new("UIStroke", AnimatedUI).Color = Color3.fromRGB(255, 255, 255)
 
 local AnimatedTitle = Instance.new("TextLabel")
-AnimatedTitle.Size = UDim2.new(1, 0, 0.2, 0)
+AnimatedTitle.Size = UDim2.new(1, 0, 0.15, 0)
 AnimatedTitle.Text = "Animated Hint/Message"
 AnimatedTitle.Font = Enum.Font.GothamBold
 AnimatedTitle.TextSize = 20
@@ -125,20 +125,19 @@ AnimatedTitle.BackgroundTransparency = 1
 AnimatedTitle.Parent = AnimatedUI
 
 local BackBtn = Instance.new("TextButton")
-BackBtn.Size = UDim2.new(0, 180, 0, 30)
-BackBtn.Position = UDim2.new(1, 10, 0, 0)
-BackBtn.Text = "Back to Regular Hint"
+BackBtn.Size = UDim2.new(0.4, 0, 0.1, 0)
+BackBtn.Position = UDim2.new(0.3, 0, 0.85, 0)
+BackBtn.Text = "Back to Regular"
 BackBtn.Font = Enum.Font.GothamBold
 BackBtn.TextSize = 14
-BackBtn.TextWrapped = true
 BackBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 BackBtn.BackgroundColor3 = Color3.fromRGB(255, 102, 102)
 BackBtn.Parent = AnimatedUI
-Instance.new("UICorner", BackBtn).CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", BackBtn).CornerRadius = UDim.new(0, 8)
 
 local AnimatedTextBox = Instance.new("TextBox")
 AnimatedTextBox.Size = UDim2.new(0.8, 0, 0.2, 0)
-AnimatedTextBox.Position = UDim2.new(0.1, 0, 0.3, 0)
+AnimatedTextBox.Position = UDim2.new(0.1, 0, 0.2, 0)
 AnimatedTextBox.PlaceholderText = "Enter your message..."
 AnimatedTextBox.Font = Enum.Font.Gotham
 AnimatedTextBox.TextSize = 18
@@ -147,23 +146,28 @@ AnimatedTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 AnimatedTextBox.Parent = AnimatedUI
 Instance.new("UICorner", AnimatedTextBox).CornerRadius = UDim.new(0, 5)
 
--- Add speed control slider
+-- Speed Control Section
+local SpeedControl = Instance.new("Frame")
+SpeedControl.Size = UDim2.new(0.8, 0, 0.15, 0)
+SpeedControl.Position = UDim2.new(0.1, 0, 0.45, 0)
+SpeedControl.BackgroundTransparency = 1
+SpeedControl.Parent = AnimatedUI
+
 local SpeedLabel = Instance.new("TextLabel")
-SpeedLabel.Size = UDim2.new(0.8, 0, 0.1, 0)
-SpeedLabel.Position = UDim2.new(0.1, 0, 0.55, 0)
+SpeedLabel.Size = UDim2.new(1, 0, 0.4, 0)
 SpeedLabel.Text = "Animation Speed:"
 SpeedLabel.Font = Enum.Font.Gotham
 SpeedLabel.TextSize = 14
 SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 SpeedLabel.BackgroundTransparency = 1
 SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
-SpeedLabel.Parent = AnimatedUI
+SpeedLabel.Parent = SpeedControl
 
 local SpeedSlider = Instance.new("Frame")
-SpeedSlider.Size = UDim2.new(0.8, 0, 0.05, 0)
-SpeedSlider.Position = UDim2.new(0.1, 0, 0.65, 0)
+SpeedSlider.Size = UDim2.new(1, 0, 0.3, 0)
+SpeedSlider.Position = UDim2.new(0, 0, 0.4, 0)
 SpeedSlider.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-SpeedSlider.Parent = AnimatedUI
+SpeedSlider.Parent = SpeedControl
 Instance.new("UICorner", SpeedSlider).CornerRadius = UDim.new(1, 0)
 
 local SpeedFill = Instance.new("Frame")
@@ -173,56 +177,126 @@ SpeedFill.Parent = SpeedSlider
 Instance.new("UICorner", SpeedFill).CornerRadius = UDim.new(1, 0)
 
 local SpeedValue = Instance.new("TextLabel")
-SpeedValue.Size = UDim2.new(0.8, 0, 0.1, 0)
-SpeedValue.Position = UDim2.new(0.1, 0, 0.7, 0)
-SpeedValue.Text = "Speed: 0.05"
+SpeedValue.Size = UDim2.new(1, 0, 0.3, 0)
+SpeedValue.Position = UDim2.new(0, 0, 0.7, 0)
+SpeedValue.Text = "Current: 0.05 sec/char"
 SpeedValue.Font = Enum.Font.Gotham
-SpeedValue.TextSize = 14
+SpeedValue.TextSize = 12
 SpeedValue.TextColor3 = Color3.fromRGB(255, 255, 255)
 SpeedValue.BackgroundTransparency = 1
 SpeedValue.TextXAlignment = Enum.TextXAlignment.Left
-SpeedValue.Parent = AnimatedUI
+SpeedValue.Parent = SpeedControl
 
-local currentSpeed = 0.05
+-- Animation duration control
+local DurationControl = Instance.new("Frame")
+DurationControl.Size = UDim2.new(0.8, 0, 0.15, 0)
+DurationControl.Position = UDim2.new(0.1, 0, 0.65, 0)
+DurationControl.BackgroundTransparency = 1
+DurationControl.Parent = AnimatedUI
 
--- Make the slider interactive
+local DurationLabel = Instance.new("TextLabel")
+DurationLabel.Size = UDim2.new(1, 0, 0.4, 0)
+DurationLabel.Text = "Display Duration:"
+DurationLabel.Font = Enum.Font.Gotham
+DurationLabel.TextSize = 14
+DurationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+DurationLabel.BackgroundTransparency = 1
+DurationLabel.TextXAlignment = Enum.TextXAlignment.Left
+DurationLabel.Parent = DurationControl
+
+local DurationSlider = Instance.new("Frame")
+DurationSlider.Size = UDim2.new(1, 0, 0.3, 0)
+DurationSlider.Position = UDim2.new(0, 0, 0.4, 0)
+DurationSlider.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+DurationSlider.Parent = DurationControl
+Instance.new("UICorner", DurationSlider).CornerRadius = UDim.new(1, 0)
+
+local DurationFill = Instance.new("Frame")
+DurationFill.Size = UDim2.new(0.5, 0, 1, 0)
+DurationFill.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
+DurationFill.Parent = DurationSlider
+Instance.new("UICorner", DurationFill).CornerRadius = UDim.new(1, 0)
+
+local DurationValue = Instance.new("TextLabel")
+DurationValue.Size = UDim2.new(1, 0, 0.3, 0)
+DurationValue.Position = UDim2.new(0, 0, 0.7, 0)
+DurationValue.Text = "Current: 3.0 seconds"
+DurationValue.Font = Enum.Font.Gotham
+DurationValue.TextSize = 12
+DurationValue.TextColor3 = Color3.fromRGB(255, 255, 255)
+DurationValue.BackgroundTransparency = 1
+DurationValue.TextXAlignment = Enum.TextXAlignment.Left
+DurationValue.Parent = DurationControl
+
+-- Button functions
 local function updateSpeed(positionX)
     local relativeX = math.clamp(positionX - SpeedSlider.AbsolutePosition.X, 0, SpeedSlider.AbsoluteSize.X)
     local ratio = relativeX / SpeedSlider.AbsoluteSize.X
     SpeedFill.Size = UDim2.new(ratio, 0, 1, 0)
     
-    -- Map ratio from 0.01 (fast) to 0.1 (slow)
-    currentSpeed = 0.01 + (0.09 * (1 - ratio))
-    SpeedValue.Text = string.format("Speed: %.3f", currentSpeed)
+    -- Map ratio from 0.01 (fast) to 0.2 (slow)
+    local speed = 0.01 + (0.19 * (1 - ratio))
+    SpeedValue.Text = string.format("Current: %.3f sec/char", speed)
+    return speed
 end
+
+local function updateDuration(positionX)
+    local relativeX = math.clamp(positionX - DurationSlider.AbsolutePosition.X, 0, DurationSlider.AbsoluteSize.X)
+    local ratio = relativeX / DurationSlider.AbsoluteSize.X
+    DurationFill.Size = UDim2.new(ratio, 0, 1, 0)
+    
+    -- Map ratio from 1 (short) to 10 (long) seconds
+    local duration = 1 + (9 * ratio)
+    DurationValue.Text = string.format("Current: %.1f seconds", duration)
+    return duration
+end
+
+-- Slider interaction
+local currentSpeed = 0.05
+local currentDuration = 3.0
 
 SpeedSlider.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        updateSpeed(input.Position.X)
+        currentSpeed = updateSpeed(input.Position.X)
+    end
+end)
+
+DurationSlider.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        currentDuration = updateDuration(input.Position.X)
     end
 end)
 
 UIS.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
-        if UIS:GetMouseLocation().Y >= SpeedSlider.AbsolutePosition.Y and 
-           UIS:GetMouseLocation().Y <= SpeedSlider.AbsolutePosition.Y + SpeedSlider.AbsoluteSize.Y then
-            updateSpeed(UIS:GetMouseLocation().X)
+        local mousePos = UIS:GetMouseLocation()
+        
+        if mousePos.Y >= SpeedSlider.AbsolutePosition.Y and 
+           mousePos.Y <= SpeedSlider.AbsolutePosition.Y + SpeedSlider.AbsoluteSize.Y and
+           mousePos.X >= SpeedSlider.AbsolutePosition.X and
+           mousePos.X <= SpeedSlider.AbsolutePosition.X + SpeedSlider.AbsoluteSize.X then
+            currentSpeed = updateSpeed(mousePos.X)
+        elseif mousePos.Y >= DurationSlider.AbsolutePosition.Y and 
+               mousePos.Y <= DurationSlider.AbsolutePosition.Y + DurationSlider.AbsoluteSize.Y and
+               mousePos.X >= DurationSlider.AbsolutePosition.X and
+               mousePos.X <= DurationSlider.AbsolutePosition.X + DurationSlider.AbsoluteSize.X then
+            currentDuration = updateDuration(mousePos.X)
         end
     end
 end)
 
+-- Animated buttons
 createStyledButton("Show Animated Hint", UDim2.new(0.1, 0, 0.8, 0), function()
     local hint = Instance.new("Hint")
     hint.Parent = game.Workspace
     
-    -- Create a coroutine for the typewriter effect
     coroutine.wrap(function()
         local fullText = AnimatedTextBox.Text
         for i = 1, #fullText do
             hint.Text = string.sub(fullText, 1, i)
-            task.wait(currentSpeed) -- Use the adjustable speed
+            task.wait(currentSpeed)
         end
-        task.wait(3) -- Keep the hint for 3 seconds after typing
+        task.wait(currentDuration)
         hint:Destroy()
     end)()
 end, AnimatedUI)
@@ -231,14 +305,13 @@ createStyledButton("Show Animated Message", UDim2.new(0.5, 0, 0.8, 0), function(
     local msg = Instance.new("Message")
     msg.Parent = game.Workspace
     
-    -- Create a coroutine for the typewriter effect
     coroutine.wrap(function()
         local fullText = AnimatedTextBox.Text
         for i = 1, #fullText do
             msg.Text = string.sub(fullText, 1, i)
-            task.wait(currentSpeed) -- Use the adjustable speed
+            task.wait(currentSpeed)
         end
-        task.wait(3) -- Keep the message for 3 seconds after typing
+        task.wait(currentDuration)
         msg:Destroy()
     end)()
 end, AnimatedUI)
